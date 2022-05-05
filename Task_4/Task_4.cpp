@@ -93,10 +93,10 @@ void LinkedList<U>::addElem(U elem) {
         head->prev = head;
     }
     else {
-        cell->next = head->next;
-        head->next->prev = cell;
-        head->next = cell;
-        cell->prev = head;
+        cell->prev = head->prev;
+        cell->next = head;
+        head->prev = cell;
+        cell->prev->next = cell;
     }
     len++;
 }
@@ -231,9 +231,11 @@ void LinkedList<U>::deleteElem(Iterator<U>& it) {
 
 template<typename U>
 typename LinkedList<U>::listIterator LinkedList<U>::searchElem(U elem) {
-    if (empty()) {
+    if (empty()) 
+    {
         throw exception();
     }
+    
     PNode temp = head;
     do {
         if (temp->data == elem) {
@@ -327,6 +329,8 @@ LinkedList<U>& LinkedList<U>::operator=(LinkedList&& obj) noexcept {
 
 class HashTable
 {
+        public:
+         LinkedList<int> listik;
     class Entry
     {
     public:
@@ -339,6 +343,7 @@ class HashTable
             this->value = value;
         }
     };
+    
 
     class Iterator
     {
@@ -368,7 +373,6 @@ public:
     bool isEmpty();
     Iterator begin();
     Iterator end();
-    list<int> listik;
 };
 
 HashTable::HashTable() : tableSize(10) {
@@ -396,14 +400,13 @@ void HashTable::add(int k, int v)
         pEntry[h] = nullptr;
     }
     pEntry[h] = new Entry(k, v);
-    Entry* p = new Entry(k,v);
-    listik.push_back(v);
+    listik.addElem(v);
 }
 
 void HashTable::remove(int k)
 {
     int h = hashFunction(k);
-    
+
     while (pEntry[h] != nullptr) {
         if (pEntry[h]->key == k)
             break;
@@ -463,8 +466,9 @@ HashTable::Iterator HashTable::end() {
 
 int HashTable::Iterator::operator*()
 {
-    if (ptr[id] != nullptr) 
+    if (ptr[id] != nullptr) {
         return ptr[id]->value;
+    }
 }
 
 bool HashTable::Iterator::operator==(const HashTable::Iterator& other) const {
@@ -488,15 +492,60 @@ int main()
     p.add(0, 321321);
     p.add(111, 222);
 
-    cout << p.searchKey(111) << endl;
-    cout << p.searchKey(0) << endl;
 
-    p.remove(111);
-    cout << p.searchKey(111) << endl;
-
-    cout << endl;
-    for (auto it = p.listik.begin(); it != p.listik.end(); ++it) {
-        std::cout << *it << " ";
-    }
+     for (int i : p.listik) 
+     {
+        std::cout << i << " ";
+     }
+     
+     cout << endl;
+     
+     auto it1 = p.listik.searchElem(222);
+     p.listik.deleteElem(it1);
+    
+     for (int i : p.listik) 
+     {
+        std::cout << i << " ";
+     }
+        
+      auto it2 = p.listik.searchElem(321321);
+      p.listik.deleteElem(it2);
+      
+     cout << endl;
+     
+      for (int i : p.listik) 
+     {
+        std::cout << i << " ";
+     }
+     
+     cout << endl;
+     
+     p.add(4, 31);
+     
+      for (int i : p.listik) 
+     {
+        std::cout << i << " ";
+     }
+        
+     p.add(7, 55);
+     
+     cout << endl;
+     
+     for (int i : p.listik) 
+     {
+        std::cout << i << " ";
+     }
+     
+      cout << endl;
+      
+     auto it4 = p.listik.searchElem(55);
+      p.listik.deleteElem(it4);
+      
+      for (int i : p.listik) 
+     {
+        std::cout << i << " ";
+     }
+      
+     
     return 0;
 }
